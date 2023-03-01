@@ -42,6 +42,7 @@ done
 #Wait until jobs are finished, then merge files by tissue, then merge reads (discard SB for macaque)
 array=( "human" "chimp" "macaque")
 array2=( "hs" "pt" "rm")
+array3=( "Homo_sapiens.GRCh38" "Pan_troglodytes.Pan_tro_3.0" "Macaca_mulatta.Mmul_10" )
 for i in "${!array[@]}"; do
 	mkdir ${array[i]}\_lv_pooled; samtools merge -f ${array[i]}\_lv_pooled/ribo_pooled.bam ${array2[i]}\_lv_*_Ri_*_sec/*gzAligned.sortedByCoord.out.bam; samtools index ${array[i]}\_lv_pooled/ribo_pooled.bam
 	mkdir ${array[i]}\_cm_pooled; samtools merge -f ${array[i]}\_cm_pooled/ribo_pooled.bam ${array2[i]}\_CM_*_Ri_*_sec/*gzAligned.sortedByCoord.out.bam; samtools index ${array[i]}\_cm_pooled/ribo_pooled.bam
@@ -57,14 +58,14 @@ for i in "${!array[@]}"; do
 	mkdir ${array[i]}\_pooled; samtools merge -f ${array[i]}\_pooled/ribo_pooled.bam ${array[i]}\_lv_pooled/ribo_pooled.bam ${array[i]}\_cm_pooled/ribo_pooled.bam; samtools index ${array[i]}\_pooled/ribo_pooled.bam
 	samtools merge -f ${array[i]}\_pooled/rna_pooled.bam ${array[i]}\_lv_pooled/rna_pooled.bam ${array[i]}\_cm_pooled/rna_pooled.bam; samtools index ${array[i]}\_pooled/rna_pooled.bam
 
-	qsub extract_unique_reads.sh ${array[i]}\_lv_pooled/rna_pooled.bam annotation/Homo_sapiens.GRCh38.98.stringtie2021.fixed.gtf
-	qsub extract_unique_reads.sh ${array[i]}\_cm_pooled/rna_pooled.bam annotation/Homo_sapiens.GRCh38.98.stringtie2021.fixed.gtf
-	qsub extract_unique_reads.sh ${array[i]}\_ips_pooled/rna_pooled.bam annotation/Homo_sapiens.GRCh38.98.stringtie2021.fixed.gtf
+	qsub extract_unique_reads.sh ${array[i]}\_lv_pooled/rna_pooled.bam annotation/${array3[i]}.98.stringtie2021.fixed.gtf
+	qsub extract_unique_reads.sh ${array[i]}\_cm_pooled/rna_pooled.bam annotation/${array3[i]}.98.stringtie2021.fixed.gtf
+	qsub extract_unique_reads.sh ${array[i]}\_ips_pooled/rna_pooled.bam annotation/${array3[i]}.98.stringtie2021.fixed.gtf
 
-	stringtie ${array[i]}\_lv_pooled/rna_pooled.bam -e -M 0.5 -j 3 -p 4 -f 0.2 -G annotation/Homo_sapiens.GRCh38.98.stringtie2021.fixed.gtf -A ${array[i]}\_lv_pooled/rna_pooled.abundance -o ${array[i]}\_lv_pooled/rna_pooled.stringtie.gtf
-	stringtie ${array[i]}\_cm_pooled/rna_pooled.bam -e -M 0.5 -j 3 -p 4 -f 0.2 -G annotation/Homo_sapiens.GRCh38.98.stringtie2021.fixed.gtf -A ${array[i]}\_cm_pooled/rna_pooled.abundance -o ${array[i]}\_cm_pooled/rna_pooled.stringtie.gtf
-	stringtie ${array[i]}\_ips_pooled/rna_pooled.bam -e -M 0.5 -j 3 -p 4 -f 0.2 -G annotation/Homo_sapiens.GRCh38.98.stringtie2021.fixed.gtf -A ${array[i]}\_ips_pooled/rna_pooled.abundance -o ${array[i]}\_ips_pooled/rna_pooled.stringtie.gtf
-	stringtie ${array[i]}\_pooled/rna_pooled.bam -e -M 0.5 -j 3 -p 4 -f 0.2 -G annotation/Homo_sapiens.GRCh38.98.stringtie2021.fixed.gtf -A ${array[i]}\_pooled/rna_pooled.abundance -o ${array[i]}\_pooled/rna_pooled.stringtie.gtf
+	stringtie ${array[i]}\_lv_pooled/rna_pooled.bam -e -M 0.5 -j 3 -p 4 -f 0.2 -G annotation/${array3[i]}.stringtie2021.fixed.gtf -A ${array[i]}\_lv_pooled/rna_pooled.abundance -o ${array[i]}\_lv_pooled/rna_pooled.stringtie.gtf
+	stringtie ${array[i]}\_cm_pooled/rna_pooled.bam -e -M 0.5 -j 3 -p 4 -f 0.2 -G annotation/${array3[i]}.98.stringtie2021.fixed.gtf -A ${array[i]}\_cm_pooled/rna_pooled.abundance -o ${array[i]}\_cm_pooled/rna_pooled.stringtie.gtf
+	stringtie ${array[i]}\_ips_pooled/rna_pooled.bam -e -M 0.5 -j 3 -p 4 -f 0.2 -G annotation/${array3[i]}.98.stringtie2021.fixed.gtf -A ${array[i]}\_ips_pooled/rna_pooled.abundance -o ${array[i]}\_ips_pooled/rna_pooled.stringtie.gtf
+	stringtie ${array[i]}\_pooled/rna_pooled.bam -e -M 0.5 -j 3 -p 4 -f 0.2 -G annotation/${array3[i]}.98.stringtie2021.fixed.gtf -A ${array[i]}\_pooled/rna_pooled.abundance -o ${array[i]}\_pooled/rna_pooled.stringtie.gtf
 done
 
 ##Gorilla (remove CG06)
