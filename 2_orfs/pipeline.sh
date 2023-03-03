@@ -42,5 +42,5 @@ array=( "hs" "pt" "gg" "rm" "mm" "rn" )
 array2=( "human" "chimp" "gorilla_cm" "macaque" "mouse_lv" "rat_lv" )
 cd ../1_mapping
 for i in "${!array[@]}"; do
-	for f in ${array[i]}_*mR_*sec/*29bp*bam; do qsub htseq_count_orf.sh $f ${array2[i]}\_pooled/${array2[i]}.orfs.gtf yes ${array2[i]}; done
+	for f in ${array[i]}_*mR_*sec/*29bp*bam; do qsub htseq_count_orf.sh $f ${array2[i]}\_pooled/${array2[i]}.orfs.gtf reverse ${array2[i]}; done
 done
