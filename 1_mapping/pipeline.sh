@@ -21,7 +21,7 @@ array=( "hs" "pt" "rm" "gg" "mm" "rn")
 array2=( "Homo_sapiens.GRCh38" "Pan_troglodytes.Pan_tro_3.0" "Macaca_mulatta.Mmul_10" "Gorilla_gorilla.gorGor4" "Mus_musculus.GRCm38" "Rattus_norvegicus.Rnor_6.0" )
 for i in "${!array[@]}"; do
 	for f in samples/Sample_*/${array[i]}*_mR*_R1*; do bash seq_pipeline_sec.sh $f annotation/${array2[i]}.dna.toplevel.stringtie2021.fixed/ annotation/${array2[i]}.98.stringtie2021.fixed.gtf paired reverse; done
-	for f in samples/Sample_*/${array[i]}*_mR*_R1*; do bash seq_pipeline_sec.sh $f annotation/${array2[i]}.dna.toplevel.stringtie2021.fixed/ annotation/${array2[i]}.98.stringtie2021.fixed.gtf rna29 yes; done
+	for f in samples/Sample_*/${array[i]}*_mR*_R1*; do bash seq_pipeline_sec.sh $f annotation/${array2[i]}.dna.toplevel.stringtie2021.fixed/ annotation/${array2[i]}.98.stringtie2021.fixed.gtf rna29 reverse; done
 	for f in samples/Sample_*Ri*/${array[i]}*; do bash seq_pipeline_sec.sh $f annotation/${array2[i]}.dna.toplevel.stringtie2021.fixed/ annotation/${array2[i]}.98.stringtie2021.fixed.gtf ribo yes; done
 done
 
