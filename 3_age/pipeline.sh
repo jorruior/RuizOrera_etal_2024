@@ -1,4 +1,4 @@
-#Transcript homology
+#Build BLAST transcript and ORF indexes
 for f in "Homo_sapiens.GRCh38.98" "Pan_troglodytes.Pan_tro_3.0.98" "Gorilla_gorilla.gorGor4.98" "Macaca_mulatta.Mmul_10.98" "Mus_musculus.GRCm38.98" "Rattus_norvegicus.Rnor_6.0.98"; do 
 	makeblastdb -dbtype nucl -in ../1_mapping/annotation/$f.stringtie2021.fixed.fa -out ../1_mapping/annotation/$f.stringtie2021.fixed
 done
@@ -9,7 +9,7 @@ intersectBed -wo -s -b <(grep -P "\tCDS\t" ../1_mapping/annotation/Homo_sapiens.
 #Find ORFs in the transcriptomes of other species
 gffread <(sed 's/transcript_id/trans_id/' ../1_mapping/human_pooled/human.orfs.gtf | sed 's/orf_id/transcript_id/') -g /fast/AG_Huebner/Jorge/GENOMES/fasta/Homo_sapiens.GRCh38.dna.toplevel.fa -x ../1_mapping/human_pooled/human.orfs.cds.fa
 
-#1. Find transcript homologs (activate an environment with pyliftover and pybedtools)
+#1. Find transcript homologs
 bash find_gene_homologs.sh ../annotation/Homo_sapiens.GRCh38.98.stringtie2021.fixed.gtf ../annotation/Homo_sapiens.GRCh38.98.gtf ../annotation/Homo_sapiens.GRCh38.98.stringtie2021.fixed.fa human
 bash find_gene_homologs.sh ../annotation/Pan_troglodytes.Pan_tro_3.0.98.stringtie2021.fixed.gtf ../annotation/Pan_troglodytes.Pan_tro_3.0.98.gtf ../annotation/Pan_troglodytes.Pan_tro_3.0.98.stringtie2021.fixed.fa chimp
 bash find_gene_homologs.sh ../annotation/Gorilla_gorilla.gorGor4.98.stringtie2021.fixed.gtf ../annotation/Gorilla_gorilla.gorGor4.98.gtf ../annotation/Gorilla_gorilla.gorGor4.98.stringtie2021.fixed.fa gorilla
@@ -24,7 +24,7 @@ cat liftover/mouse_transcriptome_to_*.exons.status.txt > liftover/mouse_transcri
 cat liftover/rat_transcriptome_to_*.exons.status.txt > liftover/rat_transcriptome.exons.status.txt
 
 
-#2. AGE of ORFs (activate an environment with pyliftover and pybedtools)
+#2. Find ORF homologs
 for f in "human" "chimp" "macaque"; do 
 	bash find_orf_homologs.sh ../1_mapping/$f\_pooled/$f.orfs.gtf_Psites.bed ../1_mapping/$f\_pooled/$f.orfs.fa $f
 done
@@ -40,7 +40,7 @@ cat liftover/mouse_*synteny.txt > liftover/mouse.orfs_to_transcripts_heart.synte
 cat liftover/rat_*synteny.txt > liftover/rat.orfs_to_transcripts_heart.synteny.txt
 
 
-#3. Evaluate and quantify in-frame aligned regions
+#3. Evaluate and quantify in-frame aligned regions in the counterpart regions of ORFs in other species.
 for f in "human" "chimp" "macaque"; do 
 	bash find_region_homologs.sh ../1_mapping/$f\_pooled/$f.orfs.bed ../1_mapping/$f\_pooled/$f.orfs.gtf_Psites.bed $f
 done
