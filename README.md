@@ -20,7 +20,7 @@ blast==2.14.0
 In addition, the published software ORFquant (https://github.com/lcalviell/ORFquant), PRICE (https://github.com/erhard-lab/price), and RiboseQC (https://github.com/lcalviell/Ribo-seQC) were installed to predict open reading frames. Finally, these python packages are required: Biopython (1.78), pyliftover (0.4)
 
 ## Data
-The data generated in this study is uploaded in the European Nucleotide Archive (ENA) repository, under accession PRJEB65856.
+The data generated in this study is uploaded in the European Nucleotide Archive (ENA) repository, under accession PRJEB65856. Other files, such as transcript and genome annotations and sequences, can be found in Ensembl (version 98 was used in this study).
 
 ## 1. Mapping
 This folder contains a series of scripts to filter and map all generated RNA-seq and Ribo-seq data, and create the corresponding indexes. Please look at pipeline.sh to follow the different steps to map the reads to each species genome:
