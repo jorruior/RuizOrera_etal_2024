@@ -1,5 +1,5 @@
 # RuizOrera_etal_2024
-Set of scripts used to run the main analyses done for analyzing the evolution of genes and ORFs. **Manuscript unpublished**. We did not generate new software for this study, but used a series of published tools that are described in the folder 'Installation'.
+Set of scripts used to run the main analyses done for **"Ruiz-Orera J, Miller D, Greiner J, et al. Evolution of translational control and novel open reading frames in human and non-human primate hearts" (Manuscript unpublished)**. We did not generate new software for this study, but used a series of published tools that are described in the folder 'Installation'.
 
 ## Installation
 Any script is an standalone version and the needed dependencies are:
