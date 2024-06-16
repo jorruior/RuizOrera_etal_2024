@@ -1,7 +1,7 @@
 ###1. Map datasets to annotations, improve annotations and build merged datasets
 #Please note that the annotation and read files should be downloaded before running this pipeline. Moreover, needed software can be found at software.txt
 
-#Map data to Ensembl annotations
+#Map data to Ensembl annotations using STAR
 array=( "hs" "pt" "rm" "gg" "mm" "rn" )
 array2=( "Homo_sapiens.GRCh38" "Pan_troglodytes.Pan_tro_3.0" "Macaca_mulatta.Mmul_10" "Gorilla_gorilla.gorGor4" "Mus_musculus.GRCm38" "Rattus_norvegicus.Rnor_6.0" )
 for i in "${!array[@]}"; do
@@ -12,11 +12,11 @@ done
 for f in samples/*Mouse*Heart*gz; do bash seq_pipeline.sh $f STAR/Mus_musculus.GRCm38.dna.toplevel annotation/Mus_musculus.GRCm38.98.gtf single reverse; done
 for f in samples/*Rat*Heart*gz; do bash seq_pipeline.sh $f annotation/Rattus_norvegicus.Rnor_6.0.dna.toplevel annotation/Rattus_norvegicus.Rnor_6.0.98.gtf single reverse; done
 
-#Wait until jobs are finished, then merge transcriptome
+#Wait until jobs are finished, then merge transcriptome asssemblies using gffcompare
 array=( "hsa" "ptr" "ggo" "mml" "mmu" "rat" )
 for i in "${!array[@]}"; do qsub merge_transcriptome_${array[i]}.sh; done
 
-#Wait until jobs are finished, then map RNA-seq and Ribo-seq to merged transcriptome
+#Wait until jobs are finished, then map RNA-seq and Ribo-seq to merged transcriptome using STAR
 array=( "hs" "pt" "rm" "gg" "mm" "rn")
 array2=( "Homo_sapiens.GRCh38" "Pan_troglodytes.Pan_tro_3.0" "Macaca_mulatta.Mmul_10" "Gorilla_gorilla.gorGor4" "Mus_musculus.GRCm38" "Rattus_norvegicus.Rnor_6.0" )
 for i in "${!array[@]}"; do
@@ -39,7 +39,7 @@ for i in "${!array[@]}"; do
 	for f in ${array[i]}*_sec/*29bp*bam; do bash extract_unique_reads.sh $f annotation/${array2[i]}.98.stringtie2021.fixed.gtf; done	
 done
 
-#Wait until jobs are finished, then merge files by tissue, then merge reads (discard SB for macaque)
+#Wait until jobs are finished, then merge files by tissue using samtools, and merge reads (discard SB for macaque)
 array=( "human" "chimp" "macaque")
 array2=( "hs" "pt" "rm")
 array3=( "Homo_sapiens.GRCh38" "Pan_troglodytes.Pan_tro_3.0" "Macaca_mulatta.Mmul_10" )
@@ -113,7 +113,7 @@ samtools index rat_lv_pooled/rna_pooled.bam
 qsub extract_unique_reads.sh rat_lv_pooled/rna_pooled.bam annotation/Rattus_norvegicus.Rnor_6.0.98.stringtie2021.fixed.gtf
 stringtie rat_lv_pooled/rna_pooled.bam -e -M 0.5 -j 3 -p 4 -f 0.2 -G annotation/Rattus_norvegicus.Rnor_6.0.98.stringtie2021.fixed.gtf -A rat_lv_pooled/rna_pooled.abundance -o rat_lv_pooled/rna_pooled.stringtie.gtf
 
-#Wait until jobs are finished, filter transcriptome only with expressed transcripts
+#Wait until jobs are finished, filter transcriptome only with expressed transcripts in heart
 for f in ../1_mapping/*pooled/*_lvSJ.out.tab; do awk '{if ($5 < 3) print $1"\t"$2"\t"$3"\t"$7"\t"$8"\t"$4}' $f | sed 's/1$/+/' | sed 's/2$/-/' > $f.bed; done
 python3 filter_exp_transcriptome.py annotation/Homo_sapiens.GRCh38.98.stringtie2021.fixed.gtf human_lv_pooled/rna_pooled.stringtie.gtf,human_cm_pooled/rna_pooled.stringtie.gtf annotation/custom/Homo_sapiens.GRCh38.98.stringtie2021.heart.gtf
 python3 filter_exp_transcriptome.py annotation/Pan_troglodytes.Pan_tro_3.0.98.stringtie2021.fixed.gtf chimp_lv_pooled/rna_pooled.stringtie.gtf,chimp_cm_pooled/rna_pooled.stringtie.gtf annotation/custom/Pan_troglodytes.Pan_tro_3.0.98.stringtie2021.heart.gtf
@@ -122,7 +122,7 @@ python3 filter_exp_transcriptome.py annotation/Macaca_mulatta.Mmul_10.98.stringt
 python3 filter_exp_transcriptome.py annotation/Mus_musculus.GRCm38.98.stringtie2021.fixed.gtf mouse_lv_pooled/rna_pooled.stringtie.gtf,mouse_lv_pooled/rna_pooled.stringtie.gtf annotation/custom/Mus_musculus.GRCm38.98.stringtie2021.heart.gtf
 python3 filter_exp_transcriptome.py annotation/Rattus_norvegicus.Rnor_6.0.98.stringtie2021.fixed.gtf rat_lv_pooled/rna_pooled.stringtie.gtf,rat_lv_pooled/rna_pooled.stringtie.gtf annotation/custom/Rattus_norvegicus.Rnor_6.0.98.stringtie2021.heart.gtf
 
-#Build price indexes
+#Build indexes for PRICE
 array=( "Homo_sapiens.GRCh38" "Pan_troglodytes.Pan_tro_3.0" "Gorilla_gorilla.gorGor4" "Macaca_mulatta.Mmul_10" "Mus_musculus.GRCm38" "Rattus_norvegicus.Rnor_6.0" )
 array2=( "homo_sapiens.98" "pan_troglodytes.98" "gorilla_gorilla.98" "macaca_mulatta.98" "mus_musculus.98" "rattus_norvegicus.98" )
 for i in "${!array[@]}"; do
