@@ -1,5 +1,5 @@
 # Evolution of translational control and novel open reading frames in human and non-human primate hearts.
-Set of scripts used to run the main analyses done for **"Ruiz-Orera J, Miller D, Greiner J, et al. Evolution of translational control and novel open reading frames in human and non-human primate hearts" (https://www.nature.com/articles/s44161-024-00544-7)**. We did not generate new software for this study, but used a series of published tools that are described in the folder 'Installation'.
+Set of scripts used to run the main analyses done for **"Ruiz-Orera J, Miller D, Greiner J, et al. Evolution of translational control and the emergence of genes and open reading frames in human and non-human primate hearts" (https://www.nature.com/articles/s44161-024-00544-7)**. We did not generate new software for this study, but used a series of published tools that are described in the folder 'Installation'.
 
 strg_to_ensid: Folder with STRG assembly ID and Ensembl Gene ID equivalence.
 
